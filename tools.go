@@ -37,6 +37,10 @@ func L(ctx context.Context) Logger {
 	return LoggerFromCtx(ctx)
 }
 
+func TestCtxWithLogger() context.Context {
+	return BackgroundCtxWithLogger(NewTestLogger())
+}
+
 // converters
 
 func convertContextToLogrusFields(strContext map[string]string) logrus.Fields {

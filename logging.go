@@ -8,6 +8,7 @@ import (
 type Level = logrus.Level
 
 const (
+	TraceLevel Level = logrus.TraceLevel
 	DebugLevel Level = logrus.DebugLevel
 	InfoLevel  Level = logrus.InfoLevel
 	WarnLevel  Level = logrus.WarnLevel
@@ -22,6 +23,7 @@ type Logger interface {
 	DeleteContext(key string) Logger
 	GetAllContexts() map[string]string
 
+	Trace(message string, a ...any)
 	Debug(message string, a ...any)
 	Info(message string, a ...any)
 	Warn(message string, a ...any)

@@ -101,6 +101,10 @@ func (r *BaseLogger) log(level logrus.Level, message string, params map[string]i
 	entry.Log(level, message)
 }
 
+func (r *BaseLogger) Trace(message string, a ...any) {
+	r.log(logrus.TraceLevel, fmt.Sprintf(message, a...), nil)
+}
+
 func (r *BaseLogger) Debug(message string, a ...any) {
 	r.log(logrus.DebugLevel, fmt.Sprintf(message, a...), nil)
 }

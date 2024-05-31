@@ -95,6 +95,10 @@ func (r *TestLogger) SetLevel(level Level) {
 	r.logrus.SetLevel(level)
 }
 
+func (r *TestLogger) Trace(message string, a ...any) {
+	r.log(logrus.TraceLevel, fmt.Sprintf(message, a...))
+}
+
 func (r *TestLogger) Debug(message string, a ...any) {
 	r.log(logrus.DebugLevel, fmt.Sprintf(message, a...))
 }
@@ -188,7 +192,6 @@ func (r *TestLogger) ShowStoredLogs() {
 		entry := r.logrus.WithFields(convertContextToLogrusFields(storedLog.context)) // Использование преобразованных fields
 		entry.Log(storedLog.level, fmt.Sprintf("\t\t%s", storedLog.message))
 	}
-	//fmt.Printf("\n------>TEST ERROR:\n")
 }
 
 func (r *TestLogger) storeLog(level logrus.Level, message string, context map[string]string) {
