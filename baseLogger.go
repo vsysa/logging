@@ -21,6 +21,11 @@ func NewBaseLogger() *BaseLogger {
 		FullTimestamp:   true,
 	})
 
+	l.SetOutput(&levelAwareWriter{
+		InfoWriter:  os.Stdout,
+		ErrorWriter: os.Stderr,
+	})
+
 	newLogger := &BaseLogger{
 		logrus:  l,
 		context: make(map[string]string),

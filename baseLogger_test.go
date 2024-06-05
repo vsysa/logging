@@ -58,3 +58,13 @@ func TestBaseLogger_Clone(t *testing.T) {
 	clonedLogger.AddContext("newKey", "newValue")
 	assert.NotEqual(t, originalLogger.context, clonedLogger.context, "Original logger's context should remain unchanged")
 }
+
+func TestBaseLogger_Output(t *testing.T) {
+	logger := NewBaseLogger()
+	logger.SetLevel(TraceLevel)
+	logger.Trace("This is trace log")
+	logger.Debug("This is debug log")
+	logger.Info("This is info log")
+	logger.Warn("This is warn log")
+	logger.Error("This is error log")
+}
