@@ -2,18 +2,26 @@
 
 ## Overview
 
-This module provides a flexible and extensible logging solution for Go applications, wrapping the popular `logrus` library to offer enhanced functionality. Designed with simplicity and efficiency in mind, it supports context management, dynamic log level setting, timer functions for performance monitoring, and cloning capabilities to create logger instances with shared contexts and configurations.
+This library provides a flexible logging interface along with several implementations, typically as wrappers around popular logging libraries.
+The logger is designed to integrate easily into your applications, offering key features that enhance logging management and flexibility.
 
-### Status
+## Status
 
 **Early Development Stage**: This module is currently in the early stages of development. As such, features and the API are subject to change.
 
-### Features
 
-- **Context Management**: Easily add, modify, and delete logging context to enrich log messages.
-- **Dynamic Log Levels**: Adjust log verbosity on the fly, tailoring output to your current needs.
-- **Timer Functions**: Integrated timer functions to measure and log operation durations, aiding in performance analysis.
-- **Cloning**: Create clones of your logger instances, preserving context and settings while facilitating isolated modifications.
+## Key Features
+
+- **Logger Interface** : A unified interface for logging, allowing seamless integration with different logging libraries.
+
+- **Multiple Implementations** : Choose from several logger implementations, all adhering to the same interface, simplifying switching between different logging libraries.
+
+- **Logging Context** : Supports logging with context, ensuring that important metadata and contextual information are preserved across logs.
+
+- **Dynamic Log Level Setting** : Change log levels dynamically at runtime, providing control over the verbosity of logs without needing to restart the application.
+
+- **Cloning Capabilities** : Easily create new logger instances that share the same context and configurations, streamlining the process of managing logger instances across different parts of your application.
+
 
 ## Installation
 
@@ -23,9 +31,16 @@ To include this module in your Go project, use the following `go get` command:
 go get https://github.com/vsysa/logging@latest
 ```
 
-## Roadmap
-**Open Telemetry Integration**: Plan to integrate with OpenTelemetry to support tracing and metrics, providing a comprehensive observability solution.
-Contributing
+### Implementations
+
+- **Logrus** : A wrapper around the popular Logrus library.
+- **Zap** : An implementation that wraps the high-performance Zap logger.
+- **Test** : An implementation that can collect all logs and print them if necessary.
+
+Logger implementations are located in `logging/logger/<logger implementation>`
+
+
+For more information about configuration and usage, please refer to the documentation for each specific logger.
 
 
 ## Usage Examples
@@ -37,19 +52,15 @@ Below are various examples illustrating how to use the Go Logger module in your 
 ```go
 package main
 
-import (
-    "github.com/vsysa/logging"
-)
-
 func main() {
     // Initialize a new logger instance
-    log := logging.NewBaseLogger()
+    logger := logging.NewLogrusLogger()
 
     // Set the log level to Info
-    log.SetLevel(logging.InfoLevel)
+	logger.SetLevel(logging.InfoLevel)
 
     // Log a simple message
-    log.Info("This is an informational message.")
+	logger.Info("This is an informational message.")
 }
 ```
 
@@ -59,44 +70,19 @@ func main() {
 
 ```go
 func main() {
-    log := logging.NewBaseLogger()
+    logger := logging.NewLogrusLogger()
 
     // Add single context
-    log.AddContext("user_id", "12345")
+    logger.AddContext("user_id", "12345")
 
     // Add multiple contexts at once
-    log.AddContexts(logging.ContextParams{
+    logger.AddContexts(logging.ContextParams{
         "order_id": "abcde",
         "payment_mode": "credit_card",
     })
 
     // Log a message with context
-    log.Info("Order processed successfully.")
-}
-```
-
-
-
-### Using Timers for Performance Monitoring
-
-```go
-func main() {
-    log := logging.NewBaseLogger()
-
-    // Start a timer
-    log.TimerStart("db_query")
-
-    // Simulate some operation, e.g., database query
-    time.Sleep(2 * time.Second)
-
-    // Print the elapsed time directly
-    log.TimerPrint("db_query")
-
-    // Or, get the duration for manual handling
-    duration, ok := log.TimerDuration("db_query")
-    if ok {
-        log.Info(fmt.Sprintf("DB query took %v milliseconds", duration))
-    }
+    logger.Info("Order processed successfully.")
 }
 ```
 
@@ -107,10 +93,10 @@ func main() {
 ```go
 func main() {
     // Create a background context with a logger
-    ctx := logging.BackgroundCtxLogger(logging.NewBaseLogger())
+    ctx := logctx.CtxWithLogger(context.Background(), logging.NewLogrusLogger())
 
     // Retrieve a logger from context, adding context parameters
-    logger := logging.L(ctx).AddContext("request_id", "xyz789")
+    logger := logctx.L(ctx).AddContext("request_id", "xyz789")
 
     // Log a message using the logger from context
     logger.Info("Starting request handling")
@@ -123,3 +109,9 @@ func main() {
     logger.Info("Finishing request handling")
 }
 ```
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Authors
+- **Vladislav Sysalov** - [vsysa](https://github.com/vsysa)
