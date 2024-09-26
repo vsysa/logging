@@ -1,27 +1,12 @@
 package logging
 
-import (
-	"github.com/sirupsen/logrus"
-	"time"
-)
-
-type Level = logrus.Level
-
-const (
-	TraceLevel Level = logrus.TraceLevel
-	DebugLevel Level = logrus.DebugLevel
-	InfoLevel  Level = logrus.InfoLevel
-	WarnLevel  Level = logrus.WarnLevel
-	ErrorLevel Level = logrus.ErrorLevel
-)
-
-type ContextParams = map[string]interface{}
+import "context"
 
 type Logger interface {
 	AddContext(key string, value interface{}) Logger
-	AddContexts(contexts ContextParams) Logger
+	AddContexts(contexts map[string]interface{}) Logger
 	DeleteContext(key string) Logger
-	GetAllContexts() map[string]string
+	GetAllContexts() map[string]interface{}
 
 	Trace(message string, a ...any)
 	Debug(message string, a ...any)
@@ -29,13 +14,10 @@ type Logger interface {
 	Warn(message string, a ...any)
 	Error(message string, a ...any)
 	Fatal(message string, a ...any)
-	ErrorCatch(message string, err error)
-	FatalCatch(message string, err error)
-
-	TimerStart(label string)
-	TimerPrint(label string)
-	TimerDuration(label string) (duration time.Duration, ok bool)
+	ErrorCatch(err error, message string, a ...any)
+	FatalCatch(err error, message string, a ...any)
 
 	SetLevel(level Level)
 	Clone() Logger
+	SetCtx(ctx context.Context) Logger
 }
