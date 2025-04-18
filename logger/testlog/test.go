@@ -1,4 +1,4 @@
-package test
+package testlog
 
 import (
 	"context"
@@ -193,4 +193,4 @@ func (r *TestLogger) SetCtx(ctx context.Context) logging.Logger {
 	return r
 }
 
-var _ logging.Logger = &TestLogger{}
+var _ logging.Logger = (*TestLogger)(nil)
